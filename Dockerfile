@@ -1,4 +1,4 @@
-ARG ELASTALERT_HOME_GLOBAL=/opt/elastalert
+ARG ELASTALERT_HOME=/opt/elastalert
 
 FROM alpine:latest as py-ea
 ARG ELASTALERT_VERSION=v0.1.38
@@ -8,7 +8,6 @@ ARG ELASTALERT_URL=https://github.com/Yelp/elastalert/archive/$ELASTALERT_VERSIO
 ENV ELASTALERT_URL=${ELASTALERT_URL}
 # Elastalert home directory full path.
 ARG ELASTALERT_HOME
-ENV ELASTALERT_HOME=${ELASTALERT_HOME_GLOBAL}
 
 WORKDIR /opt
 
@@ -17,6 +16,7 @@ RUN apk add --update --no-cache ca-certificates openssl-dev openssl python2-dev 
     wget -O elastalert.zip "${ELASTALERT_URL}" && \
     unzip elastalert.zip && \
     rm elastalert.zip && \
+    echo "${ELASTALERT_HOME}" && \
     mv e* "${ELASTALERT_HOME}"
 
 WORKDIR "${ELASTALERT_HOME}"
@@ -33,7 +33,6 @@ LABEL maintainer="BitSensor <dev@bitsensor.io>"
 ENV TZ Etc/UTC
 # Elastalert home directory full path.
 ARG ELASTALERT_HOME
-ENV ELASTALERT_HOME=${ELASTALERT_HOME_GLOBAL}
 
 RUN apk add --update --no-cache curl tzdata python2 make libmagic
 
