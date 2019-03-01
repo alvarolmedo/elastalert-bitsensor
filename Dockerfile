@@ -1,3 +1,5 @@
+ARG ELASTALERT_HOME_GLOBAL=/opt/elastalert
+
 FROM alpine:latest as py-ea
 ARG ELASTALERT_VERSION=v0.1.38
 ENV ELASTALERT_VERSION=${ELASTALERT_VERSION}
@@ -5,7 +7,8 @@ ENV ELASTALERT_VERSION=${ELASTALERT_VERSION}
 ARG ELASTALERT_URL=https://github.com/Yelp/elastalert/archive/$ELASTALERT_VERSION.zip
 ENV ELASTALERT_URL=${ELASTALERT_URL}
 # Elastalert home directory full path.
-ENV ELASTALERT_HOME /opt/elastalert
+ARG ELASTALERT_HOME
+ENV ELASTALERT_HOME=$ELASTALERT_HOME_GLOBAL
 
 WORKDIR /opt
 
@@ -28,22 +31,26 @@ FROM node:alpine
 LABEL maintainer="BitSensor <dev@bitsensor.io>"
 # Set timezone for this container
 ENV TZ Etc/UTC
+# Elastalert home directory full path.
+ARG ELASTALERT_HOME
+ENV ELASTALERT_HOME=$ELASTALERT_HOME_GLOBAL
 
 RUN apk add --update --no-cache curl tzdata python2 make libmagic
 
 COPY --from=py-ea /usr/lib/python2.7/site-packages /usr/lib/python2.7/site-packages
-COPY --from=py-ea /opt/elastalert /opt/elastalert
+COPY --from=py-ea "${ELASTALERT_HOME}" "${ELASTALERT_HOME}"
 COPY --from=py-ea /usr/bin/elastalert* /usr/bin/
 
 WORKDIR /opt/elastalert-server
 COPY . /opt/elastalert-server
 
 RUN npm install --production --quiet
-COPY config/elastalert.yaml /opt/elastalert/config.yaml
-COPY config/elastalert-test.yaml /opt/elastalert/config-test.yaml
+COPY config/elastalert.yaml "${ELASTALERT_HOME}"/config.yaml
+COPY config/elastalert-test.yaml "${ELASTALERT_HOME}"/config-test.yaml
 COPY config/config.json config/config.json
-COPY rule_templates/ /opt/elastalert/rule_templates
-COPY elastalert_modules/ /opt/elastalert/elastalert_modules
+RUN sed -i 's|ELASTALERT_HOME|"${ELASTALERT_HOME}"|' config/config.json
+COPY rule_templates/ "${ELASTALERT_HOME}"/rule_templates
+COPY elastalert_modules/ "${ELASTALERT_HOME}"/elastalert_modules
 
 EXPOSE 3030
 ENTRYPOINT ["npm", "start"]

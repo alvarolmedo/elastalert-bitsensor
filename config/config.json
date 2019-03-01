@@ -1,7 +1,7 @@
 {
   "appName": "elastalert-server",
   "port": 3030,
-  "elastalertPath": "/opt/elastalert",
+  "elastalertPath": "ELASTALERT_HOME",
   "verbose": false,
   "es_debug": false,
   "debug": false,
