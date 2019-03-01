@@ -47,7 +47,7 @@ RUN npm install --production --quiet
 COPY config/elastalert.yaml "${ELASTALERT_HOME}"/config.yaml
 COPY config/elastalert-test.yaml "${ELASTALERT_HOME}"/config-test.yaml
 COPY config/config.json config/config.json
-RUN sed -i 's|ELASTALERT_HOME|"${ELASTALERT_HOME}"|' config/config.json
+RUN sed -i 's|ELASTALERT_HOME|${ELASTALERT_HOME}|' config/config.json
 COPY rule_templates/ "${ELASTALERT_HOME}"/rule_templates
 COPY elastalert_modules/ "${ELASTALERT_HOME}"/elastalert_modules
 
