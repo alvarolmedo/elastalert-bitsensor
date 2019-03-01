@@ -24,8 +24,8 @@ WORKDIR "${ELASTALERT_HOME}"
 # Install Elastalert.
 # see: https://github.com/Yelp/elastalert/issues/1654
 RUN sed -i 's/jira>=1.0.10/jira>=1.0.10,<1.0.15/g' setup.py && \
-    python setup.py install && \
-    pip install -r requirements.txt
+    pip install -r requirements.txt && \
+    python setup.py install
 
 FROM node:alpine
 LABEL maintainer="BitSensor <dev@bitsensor.io>"
