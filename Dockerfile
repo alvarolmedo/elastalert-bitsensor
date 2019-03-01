@@ -8,7 +8,7 @@ ARG ELASTALERT_URL=https://github.com/Yelp/elastalert/archive/$ELASTALERT_VERSIO
 ENV ELASTALERT_URL=${ELASTALERT_URL}
 # Elastalert home directory full path.
 ARG ELASTALERT_HOME
-ENV ELASTALERT_HOME=$ELASTALERT_HOME_GLOBAL
+ENV ELASTALERT_HOME=${ELASTALERT_HOME_GLOBAL}
 
 WORKDIR /opt
 
@@ -33,7 +33,7 @@ LABEL maintainer="BitSensor <dev@bitsensor.io>"
 ENV TZ Etc/UTC
 # Elastalert home directory full path.
 ARG ELASTALERT_HOME
-ENV ELASTALERT_HOME=$ELASTALERT_HOME_GLOBAL
+ENV ELASTALERT_HOME=${ELASTALERT_HOME_GLOBAL}
 
 RUN apk add --update --no-cache curl tzdata python2 make libmagic
 
